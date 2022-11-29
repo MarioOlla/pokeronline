@@ -37,6 +37,10 @@ public class Utente {
 	private String email;
 	@Column(name = "dateCreated")
 	private LocalDate dateCreated;
+	@Column(name = "esperienzaAccumulata")
+	private Integer esperienzaAccumulata;
+	@Column(name = "creditoAccumulato")
+	private Integer creditoAccumulato;
 
 	// se non uso questa annotation viene gestito come un intero
 	@Enumerated(EnumType.STRING)
@@ -67,6 +71,29 @@ public class Utente {
 		this(username, password, nome, cognome, dateCreated);
 		this.id = id;
 		this.email = email;
+		this.stato = stato;
+	}
+	
+	
+
+	public Utente(String username, String password, String nome, String cognome, String email, LocalDate dateCreated,
+			Integer esperienzaAccumulata, Integer creditoAccumulato, StatoUtente stato) {
+		this(username, password, nome, cognome, dateCreated);
+		this.email = email;
+		this.esperienzaAccumulata = esperienzaAccumulata;
+		this.creditoAccumulato = creditoAccumulato;
+		this.stato = stato;
+	}
+	
+	
+
+	public Utente(Long id, String username, String password, String nome, String cognome, String email,
+			LocalDate dateCreated, Integer esperienzaAccumulata, Integer creditoAccumulato, StatoUtente stato) {
+		this(username, password, nome, cognome, dateCreated);
+		this.id = id;
+		this.email = email;
+		this.esperienzaAccumulata = esperienzaAccumulata;
+		this.creditoAccumulato = creditoAccumulato;
 		this.stato = stato;
 	}
 
@@ -158,4 +185,21 @@ public class Utente {
 		this.email = email;
 	}
 
+	public Integer getEsperienzaAccumulata() {
+		return esperienzaAccumulata;
+	}
+
+	public void setEsperienzaAccumulata(Integer esperienzaAccumulata) {
+		this.esperienzaAccumulata = esperienzaAccumulata;
+	}
+
+	public Integer getCreditoAccumulato() {
+		return creditoAccumulato;
+	}
+
+	public void setCreditoAccumulato(Integer creditoAccumulato) {
+		this.creditoAccumulato = creditoAccumulato;
+	}
+	
+	
 }

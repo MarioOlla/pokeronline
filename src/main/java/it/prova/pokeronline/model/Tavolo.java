@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -32,7 +32,7 @@ public class Tavolo {
 	private String denominazione;
 	@Column(name = "dataCreazione")
 	private LocalDate dataCreazione;
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "utente_id", nullable = false)
 	private Utente utenteCreazione;
 	@ManyToMany
@@ -44,7 +44,7 @@ public class Tavolo {
 	}
 
 	public Tavolo(Long id, Integer esperienzaMin, Integer cifraMinima, String denominazione, LocalDate dataCreazione,
-			Utente utenteCreazione, Set<Utente> giocatori) {
+			Utente utenteCreazione) {
 		super();
 		this.id = id;
 		this.esperienzaMin = esperienzaMin;
@@ -52,7 +52,6 @@ public class Tavolo {
 		this.denominazione = denominazione;
 		this.dataCreazione = dataCreazione;
 		this.utenteCreazione = utenteCreazione;
-		this.giocatori = giocatori;
 	}
 
 	public Long getId() {
