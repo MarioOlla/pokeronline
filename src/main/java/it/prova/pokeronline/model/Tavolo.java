@@ -11,9 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -32,11 +31,11 @@ public class Tavolo {
 	private String denominazione;
 	@Column(name = "dataCreazione")
 	private LocalDate dataCreazione;
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "utente_id", nullable = false)
 	private Utente utenteCreazione;
-	@ManyToMany
-	@JoinTable(name = "tavolo_utente",joinColumns = @JoinColumn(name = "tavolo_id", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "utente_id", referencedColumnName = "ID"))
+	@OneToMany
+	@JoinColumn(name = "utente_id")
 	private Set<Utente> giocatori = new HashSet<>();
 	
 	public Tavolo() {
