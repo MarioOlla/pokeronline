@@ -32,10 +32,10 @@ public class Tavolo {
 	@Column(name = "dataCreazione")
 	private LocalDate dataCreazione;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "utente_id", nullable = false)
+	@JoinColumn(name = "utenteCreazione_id", nullable = false)
 	private Utente utenteCreazione;
 	@OneToMany
-	@JoinColumn(name = "utente_id")
+	@JoinColumn(name = "tavolo_id")
 	private Set<Utente> giocatori = new HashSet<>();
 	
 	public Tavolo() {
