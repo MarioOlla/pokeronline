@@ -46,8 +46,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/auth/login").permitAll()
 				//tutti gli utenti autenticati possono richiedere le info
 				.antMatchers("/api/utente/userInfo").authenticated()
-				.antMatchers("/api/utente/**").hasRole("ADMIN")
-				.antMatchers("/**").hasAnyRole("ADMIN", "CLASSIC_USER")
+				.antMatchers("/api/utente/**","/api/tavolo/listAll").hasRole("ADMIN")
+				.antMatchers("/api/tavolo/**").hasAnyRole("ADMIN", "SPECIAL_PLAYER")
+				.antMatchers("/**","/api/gioco/**").hasAnyRole("ADMIN", "SPECIAL_PLAYER","PLAYER")
 				// .antMatchers("/anonymous*").anonymous()
 				.anyRequest().authenticated()
 				.and()

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,11 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 import it.prova.pokeronline.model.StatoUtente;
 import it.prova.pokeronline.model.Utente;
 import it.prova.pokeronline.repository.utente.UtenteRepository;
+import it.prova.pokeronline.web.api.exception.ElementNotFoundException;
 
 @Service
 @Transactional(readOnly = true)
 public class UtenteServiceImpl implements UtenteService {
-
+	
+	@Value("${utente.password.reset.value}") 
+	private String defaultPassword;
+	
 	@Autowired
 	private UtenteRepository repository;
 
@@ -35,7 +40,7 @@ public class UtenteServiceImpl implements UtenteService {
 	}
 
 	@Transactional
-	public void aggiorna(Utente utenteInstance) {
+	public Utente aggiorna(Utente utenteInstance) {
 		// deve aggiornare solo nome, cognome, username, ruoli
 		Utente utenteReloaded = repository.findById(utenteInstance.getId()).orElse(null);
 		if (utenteReloaded == null)
@@ -44,15 +49,19 @@ public class UtenteServiceImpl implements UtenteService {
 		utenteReloaded.setCognome(utenteInstance.getCognome());
 		utenteReloaded.setUsername(utenteInstance.getUsername());
 		utenteReloaded.setRuoli(utenteInstance.getRuoli());
-		repository.save(utenteReloaded);
+		utenteReloaded.setEsperienzaAccumulata(utenteInstance.getEsperienzaAccumulata());
+		utenteReloaded.setCreditoAccumulato(utenteInstance.getCreditoAccumulato());
+		return repository.save(utenteReloaded);
 	}
 
 	@Transactional
-	public void inserisciNuovo(Utente utenteInstance) {
+	public Utente inserisciNuovo(Utente utenteInstance) {
 		utenteInstance.setStato(StatoUtente.CREATO);
 		utenteInstance.setPassword(passwordEncoder.encode(utenteInstance.getPassword()));
+		utenteInstance.setCreditoAccumulato(0);
+		utenteInstance.setEsperienzaAccumulata(0);
 		utenteInstance.setDateCreated(LocalDate.now());
-		repository.save(utenteInstance);
+		return repository.save(utenteInstance);
 	}
 
 	@Transactional
@@ -72,7 +81,7 @@ public class UtenteServiceImpl implements UtenteService {
 	public void changeUserAbilitation(Long utenteInstanceId) {
 		Utente utenteInstance = caricaSingoloUtente(utenteInstanceId);
 		if (utenteInstance == null)
-			throw new RuntimeException("Elemento non trovato.");
+			throw new ElementNotFoundException("Couldn't find Utente with id:"+utenteInstanceId);
 
 		if (utenteInstance.getStato() == null || utenteInstance.getStato().equals(StatoUtente.CREATO))
 			utenteInstance.setStato(StatoUtente.ATTIVO);
@@ -84,6 +93,52 @@ public class UtenteServiceImpl implements UtenteService {
 
 	public Utente findByUsername(String username) {
 		return repository.findByUsername(username).orElse(null);
+	}
+
+	@Override
+	public Utente inserisciNuovo(Utente utenteInstance, StatoUtente stato) {
+		utenteInstance.setStato(stato);
+		utenteInstance.setPassword(passwordEncoder.encode(utenteInstance.getPassword())); 
+		utenteInstance.setDateCreated(LocalDate.now());
+		return repository.save(utenteInstance);
+		
+	}
+
+	@Override
+	public List<Utente> findByExample(Utente example) {
+		return repository.findByExample(example);
+	}
+
+	@Override
+	public void cambiaPassword(String confermaNuovaPassword, String name) {
+		Utente utente = repository.findByUsername(name).orElse(null);
+		utente.setPassword(passwordEncoder.encode(confermaNuovaPassword));
+		repository.save(utente);
+		
+	}
+
+	@Override
+	public void cambiaPassword(Long idUtente) {
+
+		Utente utente = repository.findById(idUtente).orElse(null);
+		utente.setPassword(passwordEncoder.encode(defaultPassword));
+		repository.save(utente);
+		
+	}
+
+	@Override
+	public Utente aggiungiCredito(Integer importo, String username) {
+		Utente current = this.findByUsername(username);
+		current.setCreditoAccumulato(current.getCreditoAccumulato()+importo);
+		System.out.println(current.getCreditoAccumulato());
+		return repository.save(current);
+	}
+
+	@Override
+	public void incrementaXP(String username) {
+		Utente current = this.findByUsername(username);
+		current.setEsperienzaAccumulata(current.getEsperienzaAccumulata()+1);
+		repository.save(current);
 	}
 
 }

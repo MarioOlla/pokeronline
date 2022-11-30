@@ -7,10 +7,13 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import it.prova.pokeronline.model.Ruolo;
 import it.prova.pokeronline.model.StatoUtente;
 import it.prova.pokeronline.model.Utente;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UtenteDTO {
 
 	private Long id;

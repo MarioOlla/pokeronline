@@ -34,8 +34,7 @@ public class Tavolo {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "utenteCreazione_id", nullable = false)
 	private Utente utenteCreazione;
-	@OneToMany
-	@JoinColumn(name = "tavolo_id")
+	@OneToMany(fetch = FetchType.LAZY)
 	private Set<Utente> giocatori = new HashSet<>();
 	
 	public Tavolo() {

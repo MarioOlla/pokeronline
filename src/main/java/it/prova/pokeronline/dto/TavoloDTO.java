@@ -9,8 +9,11 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import it.prova.pokeronline.model.Tavolo;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class TavoloDTO {
 
 	private Long id;
@@ -108,10 +111,11 @@ public class TavoloDTO {
 				this.dataCreazione, null);
 		if (this.utenteCreazione != null)
 			result.setUtenteCreazione(this.utenteCreazione.buildUtenteModel(false));
-		if (!this.giocatori.isEmpty())
+		if (!this.giocatori.isEmpty()) {
 			result.getGiocatori().addAll(this.giocatori.stream().map(player -> {
-				return this.utenteCreazione.buildUtenteModel(false);
+				return player.buildUtenteModel(false);
 			}).collect(Collectors.toSet()));
+		}
 		return result;
 	}
 
